@@ -22,5 +22,5 @@ class Board{
 
 class Piece{
     public:
-        Image image
+        Image image;
 };
