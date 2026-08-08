@@ -16,12 +16,31 @@ Square::Square(int x_coo, int y_coo, Color color_choice): x(x_coo), y(y_coo), co
 // board implementations
 Board::Board(){
     Color color_of_choice;
+    all_textures = TextureLoader();
+    // board initialization
     for (int i = 0; i < 8; i++){
         for (int j = 0; j < 8; j++){
-            color_of_choice = (i + j)%2 == 0 ? WHITE : BLACK;
+            color_of_choice = (i + j)%2 == 0 ? WHITE : GRAY;
             squares[i][j] = Square(i*square_size, j*square_size, color_of_choice);
         }
     }
+    // piece initialization
+    std::string temp = "temp";
+    for (int i = 0; i < 8; i++){
+        if (i == 0 || i == 7)       temp = "rook";
+        else if (i == 1 || i == 6)  temp = "knight";
+        else if (i == 2 || i == 5)  temp = "bishop";
+        else if (i == 3)            temp = "queen";
+        else                        temp = "king";
+        black_pieces.push_back(new Piece(temp, "black", &squares[i][0], all_textures));
+        white_pieces.push_back(new Piece(temp, "white", &squares[i][7], all_textures));
+    }
+
+    for (int i = 0; i < 8; i++){
+        black_pieces.push_back(new Piece("pawn", "black", &squares[i][1], all_textures));
+        white_pieces.push_back(new Piece("pawn", "white", &squares[i][6], all_textures));
+    }
+
 }
 
 void Board::Draw(){
@@ -32,15 +51,22 @@ void Board::Draw(){
     }
 }
 
+Square* Board::mouseSquare(){
+    return &squares[GetMouseX()/square_size][GetMouseY()/square_size];
+}
+
 // pieces implementations
-Piece::Piece(Texture2D texture_in, Square* square):texture(texture_in), place(square){
+Piece::Piece(std::string type_in, std::string color_in, Square* square, std::pair<textureMap, textureMap>& textures): type(type_in), color(color_in), place(square){
     square->piece = this;
+    if (color == "white")    texture = textures.first[type];
+    else                     texture = textures.second[type];
 }
 
 void Piece::Draw(){
     DrawTexture(texture, place->x, place->y, WHITE);
 }
 
+// other functions
 std::pair<textureMap, textureMap> TextureLoader(){
     textureMap white_pieces, black_pieces;
     white_pieces["pawn"] = GetTexture("pictures/white-pawn.png");

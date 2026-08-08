@@ -7,7 +7,6 @@ int main(){
     SetTargetFPS(165);
 
     Board board;
-    std::pair<textureMap, textureMap> all_texture = TextureLoader();
 
     while (WindowShouldClose() == false){
         BeginDrawing();
