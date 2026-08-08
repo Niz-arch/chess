@@ -4,6 +4,7 @@
 
 Board board;
 
+
 int main(){
     InitWindow(screen_width, screen_height, "chess");
     SetTargetFPS(165);
@@ -15,6 +16,7 @@ int main(){
         // Updating
         // Drawing
         board.Draw();
+        pawn.Draw();
 
         EndDrawing();
     }
