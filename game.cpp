@@ -1,13 +1,13 @@
-#include <raylib.h>
 #include "constants.h"
 #include "structures.h"
-
-Board board;
-
+#include <raylib.h>
 
 int main(){
     InitWindow(screen_width, screen_height, "chess");
     SetTargetFPS(165);
+
+    Board board;
+    std::pair<textureMap, textureMap> all_texture = TextureLoader();
 
     while (WindowShouldClose() == false){
         BeginDrawing();
@@ -16,7 +16,6 @@ int main(){
         // Updating
         // Drawing
         board.Draw();
-        pawn.Draw();
 
         EndDrawing();
     }

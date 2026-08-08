@@ -3,10 +3,15 @@
 #include "constants.h"
 #include <array>
 #include <string>
+#include <unordered_map>
+#include <utility>
 
 class Square;
 class Board;
 class Piece;
+
+
+using textureMap = std::unordered_map<std::string, Texture2D>;
 
 class Square{
     public:
@@ -33,9 +38,12 @@ class Board{
 class Piece{
     public:
         // attributes
-        Texture2D texture;
+        Texture2D texture = {};
         Square* place = nullptr;
         // functions
-        Piece(std::string image_path, Square* square);
+        Piece(Texture2D texture_in, Square* square);
         void Draw();
 };
+
+std::pair<textureMap, textureMap> TextureLoader();
+Texture2D GetTexture(const std::string& path);
