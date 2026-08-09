@@ -65,3 +65,5 @@ class Piece{
 std::pair<textureMap, textureMap> TextureLoader();
 
 Texture2D GetTexture(const std::string& path);
+
+bool isMoveLegale(Square& piece_square, Square& go_square);

@@ -62,6 +62,7 @@ void Board::Update(){
             delete white_pieces[i];
             std::swap(white_pieces[i], white_pieces.back());
             white_pieces.pop_back();
+            i--;
         };
     }
     for (int i = 0; i < black_pieces.size(); i++){
@@ -70,6 +71,7 @@ void Board::Update(){
             delete black_pieces[i];
             std::swap(black_pieces[i], black_pieces.back());
             black_pieces.pop_back();
+            i--;
         };
     }
 }
@@ -91,7 +93,7 @@ void Piece::Update(){
         if (isSelected && place == square_clicked){
             isSelected = false;
         }
-        else if (isSelected){
+        else if (isSelected && isMoveLegale(*place, *square_clicked)){
             if (square_clicked->piece != nullptr){
                 square_clicked->piece->alive = false;
             }
@@ -130,4 +132,14 @@ Texture2D GetTexture(const std::string& path){
     Texture2D texture = LoadTextureFromImage(image);
     UnloadImage(image);
     return texture;
+}
+
+bool isMoveLegale(Square& piece_square, Square& go_square){
+    // pawn
+    if (piece_square.piece->type == "pawn" && piece_square.piece->color == "white"){
+        if (go_square.x == piece_square.x && go_square.y + square_size == piece_square.y && go_square.piece == nullptr)                         return true;
+        else if (abs(go_square.x - piece_square.x) == square_size && go_square.y + square_size == piece_square.y && go_square.piece != nullptr) return true;
+        else                                                                                                                                    return false;
+    }
+    else return true;
 }
