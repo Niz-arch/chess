@@ -54,6 +54,7 @@ class Piece{
         bool isSelected = false;
         std::string type;
         std::string color;
+        bool alive = true;
         // functions
         Piece(std::string type_in, std::string color_in, Square* square, Board* board_in);
         void Draw();

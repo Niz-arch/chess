@@ -13,6 +13,7 @@ int main(){
         ClearBackground(BLACK);
 
         // Updating
+        board.Update();
         // Drawing
         board.Draw();
 

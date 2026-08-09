@@ -1,13 +1,13 @@
 #include "structures.h"
 #include "constants.h"
 #include <raylib.h>
+#include <utility>
 
 // square class implementations
 void Square::Draw(){
-    DrawRectangle(x, y, square_size, square_size, color);
-    if (piece != nullptr){
-        piece->Draw();
-    }
+    if (piece != nullptr && piece->isSelected)  DrawRectangle(x, y, square_size, square_size, PINK);
+    else                                        DrawRectangle(x, y, square_size, square_size, color);
+    if (piece != nullptr)                       piece->Draw();
 }
 
 Square::Square(int x_coo, int y_coo, Color color_choice): x(x_coo), y(y_coo), color(color_choice){}
@@ -56,7 +56,22 @@ Square* Board::mouseSquare(){
 }
 
 void Board::Update(){
-
+    for (int i = 0; i < white_pieces.size(); i++){
+        if (white_pieces[i]->alive) white_pieces[i]->Update();
+        else{
+            delete white_pieces[i];
+            std::swap(white_pieces[i], white_pieces.back());
+            white_pieces.pop_back();
+        };
+    }
+    for (int i = 0; i < black_pieces.size(); i++){
+        if (black_pieces[i]->alive) black_pieces[i]->Update();
+        else{
+            delete black_pieces[i];
+            std::swap(black_pieces[i], black_pieces.back());
+            black_pieces.pop_back();
+        };
+    }
 }
 
 // pieces implementations
@@ -71,7 +86,24 @@ void Piece::Draw(){
 }
 
 void Piece::Update(){
-
+    if (IsMouseButtonReleased(0)){
+        Square* square_clicked = board->mouseSquare();
+        if (isSelected && place == square_clicked){
+            isSelected = false;
+        }
+        else if (isSelected){
+            if (square_clicked->piece != nullptr){
+                square_clicked->piece->alive = false;
+            }
+            place->piece = nullptr;
+            place = square_clicked;
+            place->piece = this;
+            isSelected = false;
+        }
+        else if (place == square_clicked){
+            isSelected = true;
+        }
+    }
 }
 
 // other functions
