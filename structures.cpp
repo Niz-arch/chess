@@ -32,13 +32,13 @@ Board::Board(){
         else if (i == 2 || i == 5)  temp = "bishop";
         else if (i == 3)            temp = "queen";
         else                        temp = "king";
-        black_pieces.push_back(new Piece(temp, "black", &squares[i][0], all_textures));
-        white_pieces.push_back(new Piece(temp, "white", &squares[i][7], all_textures));
+        black_pieces.push_back(new Piece(temp, "black", &squares[i][0], this));
+        white_pieces.push_back(new Piece(temp, "white", &squares[i][7], this));
     }
 
     for (int i = 0; i < 8; i++){
-        black_pieces.push_back(new Piece("pawn", "black", &squares[i][1], all_textures));
-        white_pieces.push_back(new Piece("pawn", "white", &squares[i][6], all_textures));
+        black_pieces.push_back(new Piece("pawn", "black", &squares[i][1], this));
+        white_pieces.push_back(new Piece("pawn", "white", &squares[i][6], this));
     }
 
 }
@@ -55,15 +55,23 @@ Square* Board::mouseSquare(){
     return &squares[GetMouseX()/square_size][GetMouseY()/square_size];
 }
 
+void Board::Update(){
+
+}
+
 // pieces implementations
-Piece::Piece(std::string type_in, std::string color_in, Square* square, std::pair<textureMap, textureMap>& textures): type(type_in), color(color_in), place(square){
+Piece::Piece(std::string type_in, std::string color_in, Square* square, Board* board_in): type(type_in), color(color_in), place(square), board(board_in){
     square->piece = this;
-    if (color == "white")    texture = textures.first[type];
-    else                     texture = textures.second[type];
+    if (color == "white")    texture = board->all_textures.first[type];
+    else                     texture = board->all_textures.second[type];
 }
 
 void Piece::Draw(){
     DrawTexture(texture, place->x, place->y, WHITE);
+}
+
+void Piece::Update(){
+
 }
 
 // other functions

@@ -49,13 +49,15 @@ class Piece{
     public:
         // attributes
         Texture2D texture;
+        Board* board;
         Square* place = nullptr;
         bool isSelected = false;
         std::string type;
         std::string color;
         // functions
-        Piece(std::string type_in, std::string color_in, Square* square, std::pair<textureMap, textureMap>& textures);
+        Piece(std::string type_in, std::string color_in, Square* square, Board* board_in);
         void Draw();
+        void Update();
 };
 
 
