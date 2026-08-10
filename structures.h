@@ -25,10 +25,12 @@ class Square{
         int y = 0;
         Color color = WHITE;
         Piece* piece = nullptr;
+        bool validMove = false;
         // functions
         void Draw();
         Square(int x_coo, int y_coo, Color color_choice);
         Square() = default;
+        bool empty();
 };
 
 class Board{
@@ -38,11 +40,14 @@ class Board{
         std::vector<Piece*> white_pieces;
         std::vector<Piece*> black_pieces;
         std::pair<textureMap, textureMap> all_textures;
+        Piece* selected = nullptr;
         // functions
         Board();
         void Draw();
         Square* mouseSquare();
         void Update();
+        void CleanDeadPieces();
+        void PieceMovement();
 };
 
 class Piece{
@@ -51,19 +56,17 @@ class Piece{
         Texture2D texture;
         Board* board;
         Square* place = nullptr;
-        bool isSelected = false;
+        // bool isSelected = false;
         std::string type;
         std::string color;
         bool alive = true;
         // functions
         Piece(std::string type_in, std::string color_in, Square* square, Board* board_in);
         void Draw();
-        void Update();
+        bool isMoveLegal(Square& to_square);
 };
 
 
 std::pair<textureMap, textureMap> TextureLoader();
 
 Texture2D GetTexture(const std::string& path);
-
-bool isMoveLegale(Square& piece_square, Square& go_square);

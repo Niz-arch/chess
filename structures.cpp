@@ -5,14 +5,16 @@
 
 // square class implementations
 void Square::Draw(){
-    if (piece != nullptr && piece->isSelected)  DrawRectangle(x, y, square_size, square_size, PINK);
-    else                                        DrawRectangle(x, y, square_size, square_size, color);
-    if (piece != nullptr)                       piece->Draw();
+    if (piece != nullptr && piece == piece->board->selected)  DrawRectangle(x, y, square_size, square_size, PINK);
+    else                                                      DrawRectangle(x, y, square_size, square_size, color);
+    if (piece != nullptr)                                     piece->Draw();
 }
 
 Square::Square(int x_coo, int y_coo, Color color_choice): x(x_coo), y(y_coo), color(color_choice){}
 
-
+bool Square::empty(){
+    return piece == nullptr;
+}
 // board implementations
 Board::Board(){
     Color color_of_choice;
@@ -56,23 +58,47 @@ Square* Board::mouseSquare(){
 }
 
 void Board::Update(){
+    CleanDeadPieces();
+    PieceMovement();
+}
+
+void Board::CleanDeadPieces(){
     for (int i = 0; i < white_pieces.size(); i++){
-        if (white_pieces[i]->alive) white_pieces[i]->Update();
-        else{
-            delete white_pieces[i];
-            std::swap(white_pieces[i], white_pieces.back());
-            white_pieces.pop_back();
-            i--;
-        };
-    }
-    for (int i = 0; i < black_pieces.size(); i++){
-        if (black_pieces[i]->alive) black_pieces[i]->Update();
-        else{
-            delete black_pieces[i];
-            std::swap(black_pieces[i], black_pieces.back());
-            black_pieces.pop_back();
-            i--;
-        };
+            if (!white_pieces[i]->alive){
+                delete white_pieces[i];
+                std::swap(white_pieces[i], white_pieces.back());
+                white_pieces.pop_back();
+                i--;
+            };
+        }
+        for (int i = 0; i < black_pieces.size(); i++){
+            if (!black_pieces[i]->alive){
+                delete black_pieces[i];
+                std::swap(black_pieces[i], black_pieces.back());
+                black_pieces.pop_back();
+                i--;
+            };
+        }
+}
+
+void Board::PieceMovement(){
+    if (IsMouseButtonPressed(0)){
+        Square* square = mouseSquare();
+
+        if (selected == nullptr && !(mouseSquare()->empty())){
+            selected = square->piece;
+        }
+        else if (selected != nullptr){
+            if (selected->isMoveLegal(*square)){
+                if (!square->empty()){
+                    square->piece->alive = false;
+                }
+                selected->place->piece = nullptr;
+                selected->place = square;
+                square->piece = selected;
+            }
+            selected = nullptr;
+        }
     }
 }
 
@@ -85,27 +111,6 @@ Piece::Piece(std::string type_in, std::string color_in, Square* square, Board* b
 
 void Piece::Draw(){
     DrawTexture(texture, place->x, place->y, WHITE);
-}
-
-void Piece::Update(){
-    if (IsMouseButtonReleased(0)){
-        Square* square_clicked = board->mouseSquare();
-        if (isSelected && place == square_clicked){
-            isSelected = false;
-        }
-        else if (isSelected && isMoveLegale(*place, *square_clicked)){
-            if (square_clicked->piece != nullptr){
-                square_clicked->piece->alive = false;
-            }
-            place->piece = nullptr;
-            place = square_clicked;
-            place->piece = this;
-            isSelected = false;
-        }
-        else if (place == square_clicked){
-            isSelected = true;
-        }
-    }
 }
 
 // other functions
@@ -134,12 +139,13 @@ Texture2D GetTexture(const std::string& path){
     return texture;
 }
 
-bool isMoveLegale(Square& piece_square, Square& go_square){
+bool Piece::isMoveLegal(Square& go_square){
     // pawn
-    if (piece_square.piece->type == "pawn" && piece_square.piece->color == "white"){
-        if (go_square.x == piece_square.x && go_square.y + square_size == piece_square.y && go_square.piece == nullptr)                         return true;
-        else if (abs(go_square.x - piece_square.x) == square_size && go_square.y + square_size == piece_square.y && go_square.piece != nullptr) return true;
-        else                                                                                                                                    return false;
+    if (type == "pawn" && color == "white"){
+        if (go_square.x == place->x && go_square.y + square_size == place->y && go_square.piece == nullptr)                         return true;
+        else if (abs(go_square.x - place->x) == square_size && go_square.y + square_size == place->y && go_square.piece != nullptr) return true;
+        else if (go_square.y == square_size*4 && place->y == square_size*6 && go_square.piece == nullptr)                           return true;
+        else                                                                                                                        return false;
     }
     else return true;
 }
