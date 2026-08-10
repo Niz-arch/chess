@@ -63,19 +63,53 @@ void Piece::MoveValidator(){
         int x = 0, y = 0;
         if (piece_i + 1 < 8){
             if (piece_j + 2 < 8 && emptyOrEnemy(color, squares[piece_i + 1][piece_j + 2])) squares[piece_i + 1][piece_j + 2].validMove = true;
-            if (piece_j - 2 > 0 && emptyOrEnemy(color, squares[piece_i + 1][piece_j - 2])) squares[piece_i + 1][piece_j - 2].validMove = true;
+            if (piece_j - 2 >= 0 && emptyOrEnemy(color, squares[piece_i + 1][piece_j - 2])) squares[piece_i + 1][piece_j - 2].validMove = true;
         }
-        if (piece_i - 1 > 0){
+        if (piece_i - 1 >= 0){
             if (piece_j + 2 < 8 && emptyOrEnemy(color, squares[piece_i - 1][piece_j + 2])) squares[piece_i - 1][piece_j + 2].validMove = true;
-            if (piece_j - 2 > 0 && emptyOrEnemy(color, squares[piece_i - 1][piece_j - 2])) squares[piece_i - 1][piece_j - 2].validMove = true;
+            if (piece_j - 2 >= 0 && emptyOrEnemy(color, squares[piece_i - 1][piece_j - 2])) squares[piece_i - 1][piece_j - 2].validMove = true;
         }
         if (piece_i + 2 < 8){
             if (piece_j + 1 < 8 && emptyOrEnemy(color, squares[piece_i + 2][piece_j + 1])) squares[piece_i + 2][piece_j + 1].validMove = true;
-            if (piece_j - 1 > 0 && emptyOrEnemy(color, squares[piece_i + 2][piece_j - 1])) squares[piece_i + 2][piece_j - 1].validMove = true;
+            if (piece_j - 1 >= 0 && emptyOrEnemy(color, squares[piece_i + 2][piece_j - 1])) squares[piece_i + 2][piece_j - 1].validMove = true;
         }
-        if (piece_i - 2 > 0){
+        if (piece_i - 2 >= 0){
             if (piece_j + 1 < 8 && emptyOrEnemy(color, squares[piece_i - 2][piece_j + 1])) squares[piece_i - 2][piece_j + 1].validMove = true;
-            if (piece_j - 1 > 0 && emptyOrEnemy(color, squares[piece_i - 2][piece_j - 1])) squares[piece_i - 2][piece_j - 1].validMove = true;
+            if (piece_j - 1 >= 0 && emptyOrEnemy(color, squares[piece_i - 2][piece_j - 1])) squares[piece_i - 2][piece_j - 1].validMove = true;
+        }
+    }
+    if (type == "bishop"){
+        for (int i = 1; piece_i + i < 8 && piece_j + i < 8; i++){
+            temp = &squares[piece_i + i][piece_j + i];
+            if (emptyOrEnemy(color, *temp)){
+                temp->validMove = true;
+                if (!temp->empty()) break;
+            }
+            else break;
+        }
+        for (int i = 1; piece_i + i < 8 && piece_j - i >= 0; i++){
+            temp = &squares[piece_i + i][piece_j - i];
+            if (emptyOrEnemy(color, *temp)){
+                temp->validMove = true;
+                if (!temp->empty()) break;
+            }
+            else break;
+        }
+        for (int i = 1; piece_i - i >= 0 && piece_j + i < 8; i++){
+            temp = &squares[piece_i - i][piece_j + i];
+            if (emptyOrEnemy(color, *temp)){
+                temp->validMove = true;
+                if (!temp->empty()) break;
+            }
+            else break;
+        }
+        for (int i = 1; piece_i - i >= 0 && piece_j - i >= 0; i++){
+            temp = &squares[piece_i - i][piece_j - i];
+            if (emptyOrEnemy(color, *temp)){
+                temp->validMove = true;
+                if (!temp->empty()) break;
+            }
+            else break;
         }
     }
 }
