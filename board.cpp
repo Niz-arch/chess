@@ -1,3 +1,4 @@
+#include "constants.h"
 #include "structures.h"
 
 Board::Board(){
@@ -43,6 +44,8 @@ Square* Board::mouseSquare(){
 
 void Board::Update(){
     CleanDeadPieces();
+    ClearValid();
+    LegalMoves();
     PieceMovement();
 }
 
@@ -82,6 +85,22 @@ void Board::PieceMovement(){
                 square->piece = selected;
             }
             selected = nullptr;
+        }
+    }
+}
+
+void Board::LegalMoves(){
+  if (selected != nullptr) {
+      selected->MoveValidator();
+  }
+}
+
+void Board::ClearValid(){
+    if (selected == nullptr){
+        for (std::array<Square, 8>& list: squares){
+            for (Square& square: list){
+                square.validMove = false;
+            }
         }
     }
 }

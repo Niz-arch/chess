@@ -1,3 +1,4 @@
+#include "constants.h"
 #include "structures.h"
 
 Piece::Piece(std::string type_in, std::string color_in, Square* square, Board* board_in): type(type_in), color(color_in), place(square), board(board_in){
@@ -12,11 +13,69 @@ void Piece::Draw(){
 
 bool Piece::isMoveLegal(Square& go_square){
     // pawn
-    if (type == "pawn" && color == "white"){
-        if (go_square.x == place->x && go_square.y + square_size == place->y && go_square.piece == nullptr)                          return true;
-        else if (abs(go_square.x - place->x) == square_size && go_square.y + square_size == place->y && go_square.piece != nullptr)  return true;
-        else if (go_square.y == square_size*3 && go_square.x == place->x && place->y == square_size*6 && go_square.piece == nullptr) return true;
-        else                                                                                                                         return false;
+    return go_square.validMove;
+}
+
+void Piece::MoveValidator(){
+    Square* temp = nullptr;
+    boardSquares& squares = board->squares;
+    int piece_i = place->x / square_size;
+    int piece_j = place->y / square_size;
+    if (type == "pawn" && color == "white" && piece_j > 0){
+        temp = &squares[piece_i][piece_j - 1];
+        if (temp->empty()) temp->validMove = true;
+
+        if (piece_j == 6) {
+            temp = &squares[piece_i][4];
+            if (temp->empty()) temp->validMove = true;
+        }
+
+        if (piece_i > 0) {
+            temp = &squares[piece_i - 1][piece_j - 1];
+            if (!temp->empty() && temp->piece->color == "black") temp->validMove = true;
+        }
+
+        if (piece_i < 7) {
+            temp = &squares[piece_i + 1][piece_j - 1];
+            if (!temp->empty() && temp->piece->color == "black") temp->validMove = true;
+        }
     }
-    else return true;
+    if (type == "pawn" && color == "black" && piece_j < 7){
+        temp = &squares[piece_i][piece_j + 1];
+        if (temp->empty()) temp->validMove = true;
+
+        if (piece_j == 1) {
+            temp = &squares[piece_i][3];
+            if (temp->empty()) temp->validMove = true;
+        }
+
+        if (piece_i > 0) {
+            temp = &squares[piece_i - 1][piece_j + 1];
+            if (!temp->empty() && temp->piece->color == "white") temp->validMove = true;
+        }
+
+        if (piece_i < 7) {
+            temp = &squares[piece_i + 1][piece_j + 1];
+            if (!temp->empty() && temp->piece->color == "white") temp->validMove = true;
+        }
+    }
+    if (type == "knight"){
+        int x = 0, y = 0;
+        if (piece_i + 1 < 8){
+            if (piece_j + 2 < 8 && emptyOrEnemy(color, squares[piece_i + 1][piece_j + 2])) squares[piece_i + 1][piece_j + 2].validMove = true;
+            if (piece_j - 2 > 0 && emptyOrEnemy(color, squares[piece_i + 1][piece_j - 2])) squares[piece_i + 1][piece_j - 2].validMove = true;
+        }
+        if (piece_i - 1 > 0){
+            if (piece_j + 2 < 8 && emptyOrEnemy(color, squares[piece_i - 1][piece_j + 2])) squares[piece_i - 1][piece_j + 2].validMove = true;
+            if (piece_j - 2 > 0 && emptyOrEnemy(color, squares[piece_i - 1][piece_j - 2])) squares[piece_i - 1][piece_j - 2].validMove = true;
+        }
+        if (piece_i + 2 < 8){
+            if (piece_j + 1 < 8 && emptyOrEnemy(color, squares[piece_i + 2][piece_j + 1])) squares[piece_i + 2][piece_j + 1].validMove = true;
+            if (piece_j - 1 > 0 && emptyOrEnemy(color, squares[piece_i + 2][piece_j - 1])) squares[piece_i + 2][piece_j - 1].validMove = true;
+        }
+        if (piece_i - 2 > 0){
+            if (piece_j + 1 < 8 && emptyOrEnemy(color, squares[piece_i - 2][piece_j + 1])) squares[piece_i - 2][piece_j + 1].validMove = true;
+            if (piece_j - 1 > 0 && emptyOrEnemy(color, squares[piece_i - 2][piece_j - 1])) squares[piece_i - 2][piece_j - 1].validMove = true;
+        }
+    }
 }

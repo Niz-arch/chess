@@ -24,3 +24,8 @@ Texture2D GetTexture(const std::string& path){
     UnloadImage(image);
     return texture;
 }
+
+bool emptyOrEnemy(std::string color, Square square){
+    if (color == "white") return square.empty() || square.piece->color == "black";
+    else                  return square.empty() || square.piece->color == "white";
+}

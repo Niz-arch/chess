@@ -12,11 +12,7 @@ class Board;
 class Piece;
 
 using textureMap = std::unordered_map<std::string, Texture2D>;
-// enum class pieces {PAWN1, PAWN2, PAWN3, PAWN4, PAWN5, PAWN6, PAWN7, PAWN8,
-//                   ROOK1, KNIGHT1, BISHOP1, QUEEN, KING, BISHOP2, KNIGHT2, ROOK2
-// };
-// probably wont use them
-
+using boardSquares = std::array<std::array<Square, 8>, 8>;
 
 class Square{
     public:
@@ -36,7 +32,7 @@ class Square{
 class Board{
     public:
         // attributes
-        std::array<std::array<Square, 8>, 8> squares;
+        boardSquares squares;
         std::vector<Piece*> white_pieces;
         std::vector<Piece*> black_pieces;
         std::pair<textureMap, textureMap> all_textures;
@@ -48,6 +44,8 @@ class Board{
         void Update();
         void CleanDeadPieces();
         void PieceMovement();
+        void LegalMoves();
+        void ClearValid();
 };
 
 class Piece{
@@ -56,7 +54,6 @@ class Piece{
         Texture2D texture;
         Board* board;
         Square* place = nullptr;
-        // bool isSelected = false;
         std::string type;
         std::string color;
         bool alive = true;
@@ -64,9 +61,12 @@ class Piece{
         Piece(std::string type_in, std::string color_in, Square* square, Board* board_in);
         void Draw();
         bool isMoveLegal(Square& to_square);
+        void MoveValidator();
 };
 
 
 std::pair<textureMap, textureMap> TextureLoader();
 
 Texture2D GetTexture(const std::string& path);
+
+bool emptyOrEnemy(std::string color, Square square);
