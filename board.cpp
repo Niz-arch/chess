@@ -1,5 +1,6 @@
 #include "constants.h"
 #include "structures.h"
+#include <vector>
 
 Board::Board(){
     Color color_of_choice;
@@ -91,7 +92,10 @@ void Board::PieceMovement(){
 
 void Board::LegalMoves(){
   if (selected != nullptr) {
-      selected->MoveValidator();
+      std::vector<Square*> LegalPositions = selected->MoveValidator();
+      for (Square* square : LegalPositions){
+          square->validMove = true;
+      }
   }
 }
 

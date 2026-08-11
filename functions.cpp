@@ -29,3 +29,13 @@ bool emptyOrEnemy(std::string color, Square square){
     if (color == "white") return square.empty() || square.piece->color == "black";
     else                  return square.empty() || square.piece->color == "white";
 }
+
+
+void IfExistDelete(Square* square, std::vector<Square*>& squares){
+    auto it = std::find(squares.begin(), squares.end(), square);
+    if (it != squares.end()){
+        // just to remove it in O(1)
+        *it = squares.back();
+        squares.pop_back();
+    }
+}

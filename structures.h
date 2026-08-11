@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <algorithm>
 
 class Square;
 class Board;
@@ -61,7 +62,14 @@ class Piece{
         Piece(std::string type_in, std::string color_in, Square* square, Board* board_in);
         void Draw();
         bool isMoveLegal(Square& to_square);
-        void MoveValidator();
+        std::vector<Square*> MoveValidator();
+        std::vector<Square*> WhitePawnValidator(Square* temp, boardSquares& squares, int piece_i, int piece_j);
+        std::vector<Square*> BlackPawnValidator(Square* temp, boardSquares& squares, int piece_i, int piece_j);
+        std::vector<Square*> KnightValidator(Square* temp, boardSquares& squares, int piece_i, int piece_j);
+        std::vector<Square*> BishopValidator(Square* temp, boardSquares& squares, int piece_i, int piece_j);
+        std::vector<Square*> RookValidator(Square* temp, boardSquares& squares, int piece_i, int piece_j);
+        std::vector<Square*> QueenValidator(Square* temp, boardSquares& squares, int piece_i, int piece_j);
+        std::vector<Square*> KingValidator(Square* temp, boardSquares& squares, int piece_i, int piece_j);
 };
 
 
@@ -70,3 +78,5 @@ std::pair<textureMap, textureMap> TextureLoader();
 Texture2D GetTexture(const std::string& path);
 
 bool emptyOrEnemy(std::string color, Square square);
+
+void IfExistDelete(Square* square, std::vector<Square*>& squares);
